@@ -91,7 +91,7 @@ class EmbeddingPipeline:
 
             # Étape 3: Sauvegarde
             if save:
-                self.retriever._save_to_disk()
+                self.retriever.save_to_disk()
                 logger.info(f"Embeddings sauvegardés dans {ModelConfig.VECTOR_STORE_PATH}")
 
             return self.retriever

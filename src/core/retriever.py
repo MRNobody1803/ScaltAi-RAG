@@ -34,3 +34,8 @@ class Retriever(Runnable):
     def as_runnable(self):
         """Convertit le retriever en Runnable compatible"""
         return RunnableLambda(self.invoke)
+
+    def save_to_disk(self):
+        """Sauvegarde le vector store sur le disque"""
+        os.makedirs(self.vectorstore, exist_ok=True)
+        self.vectorstore.save_local(self.vectorstore)
