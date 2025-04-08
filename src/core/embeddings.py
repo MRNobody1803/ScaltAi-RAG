@@ -13,7 +13,7 @@ class EmbeddingManager:
         try:
             self.model = SentenceTransformer(
                 ModelConfig.EMBEDDING_MODEL,
-                device="cpu"  # Changez à "cuda" si disponible
+                device="cpu"
             )
         except Exception as e:
             logger.error(f"Erreur de chargement du modèle: {str(e)}")

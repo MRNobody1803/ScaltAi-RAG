@@ -39,7 +39,7 @@ def main():
     if args.command == "query":
         try:
             llm = DeepSeekLLM()
-            rag_chain = build_rag_chain(llm)
+            rag_chain = build_rag_chain()
             response = rag_chain.invoke({"query": args.query})
             print("\nRéponse RAG:")
             print("─" * 50)

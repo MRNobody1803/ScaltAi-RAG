@@ -1,0 +1,190 @@
+prompt = """
+Use the only the context provided to answer the following question. If you don't know the answer, reply that you are unsure.
+Context: {context}
+Question: {question}
+"""
+
+# Convert the string into a chat prompt template
+prompt_template = ChatPromptTemplate.from_template(prompt)
+
+# Create an LCEL chain to test the prompt
+chain = prompt_template | llm
+
+# Invoke the chain on the inputs provided
+print(chain.invoke({"context": "DataCamp's RAG course was created by Meri Nova and James Chapman!", "question": "where created DataCamp's RAG course?"}))
+-----------------------------
+# Convert the vector store into a retriever
+retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+
+# Create the LCEL retrieval chain
+chain = (
+    {"context": retriever, "question": RunnablePassthrough()}
+    | prompt_template
+    | llm
+    | StrOutputParser()
+)
+
+# Invoke the chain
+print(chain.invoke("Who are the authors?"))
+
+--------------------------------------
+
+
+# Create a document loader for README.md and load it
+loader = UnstructuredMarkdownLoader("README.md")
+
+markdown_data = loader.load()
+print(markdown_data[0])
+page_content='🦜️🔗 LangChain
+
+⚡ Build context-aware reasoning applications ⚡
+
+Looking for the JS/TS library? Check out LangChain.js.
+
+To help you ship LangChain apps to production faster, check out LangSmith.
+LangSmith is a unified developer platform for building, testing, and monitoring LLM applications.
+Fill out this form to speak with our sales team.
+
+Quick Install
+
+With pip:
+bash
+pip install langchain
+
+With conda:
+bash
+conda install langchain -c conda-forge
+
+🤔 What is LangChain?
+
+LangChain is a framework for developing applications powered by large language models (LLMs).
+
+For these applications, LangChain simplifies the entire application lifecycle:
+
+Open-source libraries:  Build your applications using LangChain's open-source building blocks, components, and third-party integrations.
+Use LangGraph to build stateful agents with first-class streaming and human-in-the-loop support.
+
+Productionization: Inspect, monitor, and evaluate your apps with LangSmith so that you can constantly optimize and deploy with confidence.
+
+Deployment: Turn your LangGraph applications into production-ready APIs and Assistants with LangGraph Cloud.
+
+Open-source libraries
+
+langchain-core: Base abstractions and LangChain Expression Language.
+
+langchain-community: Third party integrations.
+
+Some integrations have been further split into partner packages that only rely on langchain-core. Examples include langchain_openai and langchain_anthropic.
+
+langchain: Chains, agents, and retrieval strategies that make up an application's cognitive architecture.
+
+LangGraph: A library for building robust and stateful multi-actor applications with LLMs by modeling steps as edges and nodes in a graph. Integrates smoothly with LangChain, but can be used without it.
+
+Productionization:
+
+LangSmith: A developer platform that lets you debug, test, evaluate, and monitor chains built on any LLM framework and seamlessly integrates with LangChain.
+
+Deployment:
+
+LangGraph Cloud: Turn your LangGraph applications into production-ready APIs and Assistants.
+
+🧱 What can you build with LangChain?
+
+❓ Question answering with RAG
+
+Documentation
+
+End-to-end Example: Chat LangChain and repo
+
+🧱 Extracting structured output
+
+Documentation
+
+End-to-end Example: SQL Llama2 Template
+
+🤖 Chatbots
+
+Documentation
+
+End-to-end Example: Web LangChain (web researcher chatbot) and repo
+
+And much more! Head to the Tutorials section of the docs for more.
+
+🚀 How does LangChain help?
+
+The main value props of the LangChain libraries are:
+1. Components: composable building blocks, tools and integrations for working with language models. Components are modular and easy-to-use, whether you are using the rest of the LangChain framework or not
+2. Off-the-shelf chains: built-in assemblages of components for accomplishing higher-level tasks
+
+Off-the-shelf chains make it easy to get started. Components make it easy to customize existing chains and build new ones.
+
+LangChain Expression Language (LCEL)
+
+LCEL is the foundation of many of LangChain's components, and is a declarative way to compose chains. LCEL was designed from day 1 to support putting prototypes in production, with no code changes, from the simplest “prompt + LLM” chain to the most complex chains.
+
+Overview: LCEL and its benefits
+
+Interface: The standard Runnable interface for LCEL objects
+
+Primitives: More on the primitives LCEL includes
+
+Cheatsheet: Quick overview of the most common usage patterns
+
+Components
+
+Components fall into the following modules:
+
+📃 Model I/O
+
+This includes prompt management, prompt optimization, a generic interface for chat models and LLMs, and common utilities for working with model outputs.
+
+📚 Retrieval
+
+Retrieval Augmented Generation involves loading data from a variety of sources, preparing it, then searching over (a.k.a. retrieving from) it for use in the generation step.
+
+🤖 Agents
+
+Agents allow an LLM autonomy over how a task is accomplished. Agents make decisions about which Actions to take, then take that Action, observe the result, and repeat until the task is complete. LangChain provides a standard interface for agents, along with LangGraph for building custom agents.
+
+📖 Documentation
+
+Please see here for full documentation, which includes:
+
+Introduction: Overview of the framework and the structure of the docs.
+
+Tutorials: If you're looking to build something specific or are more of a hands-on learner, check out our tutorials. This is the best place to get started.
+
+How-to guides: Answers to “How do I….?” type questions. These guides are goal-oriented and concrete; they're meant to help you complete a specific task.
+
+Conceptual guide: Conceptual explanations of the key parts of the framework.
+
+API Reference: Thorough documentation of every class and method.
+
+🌐 Ecosystem
+
+🦜🛠️ LangSmith: Trace and evaluate your language model applications and intelligent agents to help you move from prototype to production.
+
+🦜🕸️ LangGraph: Create stateful, multi-actor applications with LLMs. Integrates smoothly with LangChain, but can be used without it.
+
+🦜🏓 LangServe: Deploy LangChain runnables and chains as REST APIs.
+
+💁 Contributing
+
+As an open-source project in a rapidly developing field, we are extremely open to contributions, whether it be in the form of a new feature, improved infrastructure, or better documentation.
+
+For detailed information on how to contribute, see here.
+
+🌟 Contributors' metadata={'source': 'README.md'}
+----------------------------------------------------------------
+
+# Get the encoding for gpt-4o-mini
+encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+
+# Create a token text splitter
+token_splitter = TokenTextSplitter(encoding_name=encoding.name, chunk_size=100, chunk_overlap=10)
+
+# Split the PDF into chunks
+chunks = token_splitter.split_documents(document)
+
+for i, chunk in enumerate(chunks[:3]):
+    print(f"Chunk {i+1}:\nNo. tokens: {len(encoding.encode(chunk.page_content))}\n{chunk}\n")
